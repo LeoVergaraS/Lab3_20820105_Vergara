@@ -15,6 +15,7 @@ public class Usuario {
     private int id;
     private String username;
     private String password;
+    private Date fechaRegistro;
     private ArrayList<Documento> documentos;
        
     // Constructor
