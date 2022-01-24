@@ -4,7 +4,10 @@
  */
 package Lab3Paradigma;
 /**
- *
+ * Una clase que representa una version del texto de un documento.
+ * Una Version queda determinado por el id de la version, el contenido de la
+ * version, el usuario que modifico el texto del documento y la fecha de 
+ * modificacion;
  * @author leoiv
  */
 public class Version {
@@ -14,7 +17,11 @@ public class Version {
     private String usuario;
     private String fechaModificacion;
     
-    // Constructor
+    /*Crea una version del documento,
+    @param i = id de la version, mayor o igual a 0
+    @param c = contenido del documento, string.
+    @param u = usuario quie modifico la version
+    @param fM = fecha de modificacion.*/
     public Version(int i,String c,String u,String fM){
         this.id = i;
         this.contenido = c;
@@ -22,7 +29,7 @@ public class Version {
         this.fechaModificacion = fM;
     }
     
-    // Getters y setters
+     /*Metodos que retorna un elemento del comentario, getters.*/
     public String getContenidoVersion(){return this.contenido;}
     public String getUsuarioModificador(){return this.usuario;}
     public String getFechaModificacion(){return this.fechaModificacion;}

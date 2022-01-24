@@ -6,7 +6,13 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Una clase que crea una app interativa por consola con el usuario y el Editor.
+ * @author leoiv
+ */
 public class App {
+    /*Pide por consola un string,
+    @return el string ingresado*/
     public static String pedirString(){
         Scanner sn = new Scanner(System.in);
         String username;
@@ -14,6 +20,8 @@ public class App {
         return username;
     }
     
+    /*Pide por consola un entero,
+    @return el entero ingresado*/
     public static int pedirEntero(){
         Scanner sn = new Scanner(System.in);
         int username;
@@ -21,6 +29,8 @@ public class App {
         return username;
     }
     
+    /*El menu cuando en la plataforma no hay un usuario logeado
+    @param docs = plataforma de documentos*/
     public boolean menuNoLogeado(Editor docs){
         Scanner sn = new Scanner(System.in);
         
@@ -43,26 +53,24 @@ public class App {
                 String p;
                 
                 switch(opcion){
-                    case 1:
+                    case 1: // registrarese
                         System.out.println("INTRODUZCA UN NOMBRE DE USUARIO: ");
                         u = pedirString();
                         System.out.println("INTRODUZCA UNA CONTRASENIA: ");
                         p = pedirString();
                         docs.authentication(u, p, fecha.obtenerFechaActual());
                         break;
-                    case 2:
+                    case 2: // logearse
                         System.out.println("INTRODUZCA SU NOMBRE DE USUARIO: ");
                         u = pedirString();
                         System.out.println("INTRODUZCA SU CONTRASENIA: ");
                         p = pedirString();
                         docs.authentication(u, p);
-                        seguir = false;
                         return true;
-                    case 3:
+                    case 3: // mostrar la plataforma
                         docs.visualize();
                         break;
-                    case 4:
-                        seguir = false;
+                    case 4: // terminar el programa
                         System.out.println("FIN DEL PROGRAMA.\n");
                         return false;
                     default:
@@ -76,6 +84,8 @@ public class App {
         return true;
     }
     
+    /*El menu cuando en la plataforma hay un usuario logeado,
+    @param docs = plataforma de documentos*/
     public boolean menuLogeado(Editor docs){
     Scanner sn = new Scanner(System.in);
             
@@ -108,24 +118,26 @@ public class App {
             String nombre;
             String contenido;
             int idDoc;
+            String searchText;
+            boolean parar;
         
             opcion = sn.nextInt();
         
             switch(opcion){
-                case 1:
+                case 1: // crear documento
                     System.out.println("INTRODUZCA EL NOMBRE PARA SU DOCUMENTO:_");
                     nombre = pedirString();
                     System.out.println("INTRODUZCA EL CONTENIDO:_");
                     contenido = pedirString();
                     conectado.create(docs, nombre, contenido);
                     break;
-                case 2:
+                case 2: // compartir documento
                     System.out.println("INGRESE EL ID DEL DOCUMENTO:_");
                     idDoc = pedirEntero();
                     System.out.println("INGRESE LOS NOMBRES DE USUARIO,");
                     System.out.println("si desea terminar ingrese TERMINAR:_");
                     ArrayList<String> up = new ArrayList<>();
-                    boolean parar = false;
+                    parar = false;
                     while(!parar){
                         System.out.println("->");
                         nombre = pedirString();
@@ -136,50 +148,92 @@ public class App {
                         }
                     }
                     System.out.println("INGRESE LOS PERMISOS PARA LOS USUARIOS:_");
-                    String permiso = pedirString();
+                    String permiso = pedirString().toUpperCase();
                     conectado.share(docs, up, permiso, idDoc);
                     break;
-                case 3:
+                case 3: // agregar a un documento
                     System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
                     idDoc = pedirEntero();
                     System.out.println("INTRODUZCA EL TEXTO PARA AGREGAR:_");
                     String addText = pedirString();
                     conectado.add(docs, idDoc, addText);
                     break;
-                case 4:
+                case 4: // restaurar una version
                     System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
                     idDoc = pedirEntero();
                     System.out.println("INTRODUZCA EL ID DE LA VERSION:_");
                     int idV = pedirEntero();
-                    conectado.rollback(docs, idDoc, id);
+                    conectado.rollback(docs, idDoc, idV);
                     break;
-                case 5:
+                case 5: // revocar los accesos a un documento
                     System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
                     idDoc = pedirEntero();
                     conectado.revokeAccess(docs,idDoc);
                     break;
-                case 6:
+                case 6: // buscar en los documentos un texto en especifico
                     System.out.println("INTRODUZCA EL TEXTO BUSCADO:_");
-                    String searchText = pedirString();
-                    conectado.search(docs, searchText);
+                    searchText = pedirString();
+                    ArrayList<Documento> listaSearch = conectado.search(docs, searchText);
+                    System.out.println("Documentos con el texto: ");
+                    for(int i=0;i<listaSearch.size();i++){
+                        listaSearch.get(i).imprimirDocumento();
+                    }
                     break;
-                case 7:
-                    
+                case 7: // eliminar los caracteres
+                    System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INTRODUZCA LA CANTIDAD DE CARACTERES PARA ELIMINAR:_");
+                    int nc = pedirEntero();
+                    conectado.delete(docs, idDoc, nc);
                     break;
-                case 8:
+                case 8: // buscar y reemplazar
+                    System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INTRODUZCA EL TEXTO BUSCADO:_");
+                    searchText = pedirString();
+                    System.out.println("INTRODUZCA EL TEXTO DE REEMPLAZO:_");
+                    String replaceText = pedirString();
+                    conectado.searchAndReplace(docs, idDoc, searchText, replaceText);
                     break;
-                case 9:  
+                case 9: // aplicar estilos
+                    System.out.println("INGRESE EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INGRESE LOS ESTILOS PARA APLICAR,");
+                    System.out.println("si desea terminar ingrese TERMINAR:_");
+                    ArrayList<String> estilos = new ArrayList<>();
+                    String estilo;
+                    parar = false;
+                    while(!parar){
+                        System.out.println("->");
+                        estilo = pedirString();
+                        if(estilo.equals("TERMINAR")){
+                            parar = true;
+                        }else{
+                            estilos.add(estilo);
+                        }
+                    }
+                    System.out.println("INGRESE EL TEXTO BUSCADO:_");
+                    searchText = pedirString();
+                    conectado.applyStyles(docs, idDoc, estilos, searchText);
                     break;
-                case 10:
+                case 10: // Agregar un comentario
+                    System.out.println("INGRESE EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INGRESE EL COMENTARIO:_");
+                    String tc = pedirString();
+                    System.out.println("INGRESE EL TEXTO A SER COMENTADO:_");
+                    String sc = pedirString();
+                    conectado.comment(docs, idDoc, tc, sc);
                     break;
-                case 11:
-                    break;
-                case 12:
+                case 11: // visualizar el Editor
                     docs.visualize();
                     break;
-                case 13:
-                    System.out.println("FIN DEL PROGRAMA\n");
+                case 12: // deslogearse
+                    docs.authentication();
                     seguir = false;
+                    break;
+                case 13: // terminar el programa
+                    System.out.println("FIN DEL PROGRAMA\n");
                     return false;
                 default:
                     System.out.println("Las opciones son entre 1 y 12");
@@ -192,11 +246,63 @@ public class App {
         }
     return true;
     }
+    
+    /*test de inicio para la plataforma, se registran 5 usuarios y se crean 10
+    documentos,
+    @param docs = plataforma de documentos*/
+    public void test(Editor docs){
+        Fecha fecha = new Fecha();
+        // Se registran 5 usuarios.
+        docs.authentication("Romina","Pass123",fecha.obtenerFechaActual());
+        docs.authentication("Miguel","Pass321",fecha.obtenerFechaActual());
+        docs.authentication("Sara","Pass1",fecha.obtenerFechaActual());
+        docs.authentication("Rosa","Pass3",fecha.obtenerFechaActual());
+        docs.authentication("Pedro","Pass10",fecha.obtenerFechaActual());
+      
+        // Se crean 2 documentos por usuario.
+        Usuario conectado;
+        docs.authentication("Romina","Pass123");
+        conectado = docs.getListaUsuarios().get(docs.getSesionActiva()-1);
+        conectado.create(docs,"Documento1","Contenido del documento 1.");
+        conectado.create(docs,"Lista del supermercado","1. huevo, 2. leche.");
+        docs.authentication();
+        
+        docs.authentication("Miguel","Pass321");
+        conectado = docs.getListaUsuarios().get(docs.getSesionActiva()-1);
+        conectado.create(docs,"Tarea1","Titulo1: Que hay que hacer?");
+        conectado.create(docs,"Documento2","Contenido del documento2");
+        docs.authentication();
+        
+        docs.authentication("Sara","Pass1");
+        conectado = docs.getListaUsuarios().get(docs.getSesionActiva()-1);
+        conectado.create(docs,"Informe de biologia","Las celulas:");
+        conectado.create(docs,"Lista de computadores","Todavia no se cual puedo comprar.");
+        docs.authentication();
+        
+        docs.authentication("Rosa","Pass3");
+        conectado = docs.getListaUsuarios().get(docs.getSesionActiva()-1);
+        conectado.create(docs,"Documento3","Contenido del documento 3.");
+        conectado.create(docs,"Mi diario","20 de abril:");
+        docs.authentication();
+        
+        docs.authentication("Pedro","Pass10");
+        conectado = docs.getListaUsuarios().get(docs.getSesionActiva()-1);
+        conectado.create(docs,"Lista de materiales","Cartulina, cola fria, otros.");
+        conectado.create(docs,"Recordatorio","Ir a buscar a mi hermano.");
+        docs.authentication();
+    }
 
     public static void main(String[] args){
+       // Fecha actual
        Fecha fecha = new Fecha();
+       // Se crea la plataforma
        Editor DuckDocs = new Editor("DuckDocs",fecha.obtenerFechaActual());
+       
+       // Se crea un objeto App y se hace el test
        App inicio = new App();
+       inicio.test(DuckDocs);
+       
+       // Se itera hasta que se termine el programa
        boolean v1 = true;
        while(v1){
            v1 = inicio.menuNoLogeado(DuckDocs);
