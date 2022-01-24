@@ -34,7 +34,7 @@ public class App {
             System.out.println("1. Registrarse en la plataforma");
             System.out.println("2. Logearse en la plataforma");
             System.out.println("3. Visualizar la plataforma");
-            System.out.println("3. Cerrar el programa");
+            System.out.println("4. Cerrar el programa");
              
             try{
                 System.out.println("INTRODUZCA SU OPCION:_");
@@ -59,11 +59,14 @@ public class App {
                         seguir = false;
                         return true;
                     case 3:
+                        docs.visualize();
+                        break;
+                    case 4:
                         seguir = false;
                         System.out.println("FIN DEL PROGRAMA.\n");
                         return false;
                     default:
-                        System.out.println("Debe ingresar un 1, 2 o 3.\n");                      
+                        System.out.println("Debe ingresar un 1, 2, 3 o 4.\n");                      
                 } 
             }catch(InputMismatchException e){
                 System.out.println("Debes ingresar un numero");
@@ -89,12 +92,16 @@ public class App {
         System.out.println("1. Crear nuevo documento");
         System.out.println("2. Compartir documento");
         System.out.println("3. Agregar contenido a un documento");
-        System.out.println("4. Restaurar versión de un documento");
+        System.out.println("4. Restaurar version de un documento");
         System.out.println("5. Revocar acceso a un documento");
         System.out.println("6. Buscar en los documentos");
-        System.out.println("7. Visualizar documentos");
-        System.out.println("8. Cerrar sesion");
-        System.out.println("9. Cerrar el programa");
+        System.out.println("7. Eliminar los n ultimos caracteres");
+        System.out.println("8. Buscar y reemplazar en el documento");
+        System.out.println("9. Aplicar estilos en el documento");
+        System.out.println("10. Comentar el documento");
+        System.out.println("11. Visualizar documentos");
+        System.out.println("12. Cerrar sesion");
+        System.out.println("13. Cerrar el programa");
         
         try{
             System.out.println("INTRODUZCA SU OPCION:_");
@@ -105,7 +112,7 @@ public class App {
             opcion = sn.nextInt();
         
             switch(opcion){
-             case 1:
+                case 1:
                     System.out.println("INTRODUZCA EL NOMBRE PARA SU DOCUMENTO:_");
                     nombre = pedirString();
                     System.out.println("INTRODUZCA EL CONTENIDO:_");
@@ -157,18 +164,25 @@ public class App {
                     conectado.search(docs, searchText);
                     break;
                 case 7:
-                    docs.visualize();
+                    
                     break;
                 case 8:
-                    docs.authentication();
-                    seguir = false;
                     break;
-                case 9:
+                case 9:  
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+                case 12:
+                    docs.visualize();
+                    break;
+                case 13:
                     System.out.println("FIN DEL PROGRAMA\n");
                     seguir = false;
                     return false;
                 default:
-                    System.out.println("Las opciones son entre 1 y 9");
+                    System.out.println("Las opciones son entre 1 y 12");
             }
             
         }catch(InputMismatchException e){

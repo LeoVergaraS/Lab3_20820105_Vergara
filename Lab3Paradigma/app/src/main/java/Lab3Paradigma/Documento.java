@@ -20,6 +20,7 @@ public class Documento {
     private String fechaModificacion;
     private ArrayList<Version> historial;
     private ArrayList<Permiso> accesos;
+    private ArrayList<Comentario> comentarios;
     
     // Constructor
     public Documento(int i,String n,String c,String a,String fC){
@@ -31,6 +32,7 @@ public class Documento {
         this.fechaModificacion = fC;
         this.historial = new ArrayList<>();
         this.accesos = new ArrayList<>();
+        this.comentarios = new ArrayList<>();
     }
     
     // getters y setters
@@ -41,6 +43,7 @@ public class Documento {
     public String fechaCreacionDocumento(){return this.fechaCreacion;}
     public ArrayList<Permiso> getAccesos(){return this.accesos;}
     public ArrayList<Version> getHistorial(){return this.historial;}
+    public ArrayList<Comentario> getComentarios(){return this.comentarios;}
     
     public void setContenido(String contenidoNuevo){
         this.contenido = contenidoNuevo;
@@ -53,5 +56,8 @@ public class Documento {
     }
     public void setAccesos(ArrayList<Permiso> AccesosNuevos){
         this.accesos = AccesosNuevos;
+    }
+    public void setComentarios(ArrayList<Comentario> nuevosC){
+        this.comentarios = nuevosC;
     }
 }

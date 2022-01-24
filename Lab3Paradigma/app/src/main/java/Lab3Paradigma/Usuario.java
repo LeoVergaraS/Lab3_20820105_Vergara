@@ -488,4 +488,55 @@ public class Usuario {
             System.out.println("No hay un usuario conectado.");
         }
     }
+    
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo comment y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    public ArrayList<Comentario> agregarComentario(ArrayList<Comentario> lc, Comentario c){
+        ArrayList<Comentario> nlc = new ArrayList<>();
+        nlc.addAll(lc);
+        nlc.add(c);
+        return nlc;
+    }
+    
+    public void comment(Editor docs,int idDoc,String tc,String sc){
+        /*Se verifica si hay un usuario conectado*/
+        if(docs.conectado()){
+            /* Si es asi se verifica si el id del documento entregado
+            no sobre pase los limites */ 
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                /*Se verifica si el usuario es propietario
+                o tiene permisos de esctritura en el documento.*/
+                int id = docs.getSesionActiva()-1;
+                String u = docs.getListaUsuarios().get(id).username;
+                
+                /* El documento */
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(u) || tienePermisosDe(u,d,"W")){
+                    /*Se verifica que el documento contenga el texto buscado*/
+                    if(d.getContenidoDocumento().contains(sc)){
+                        /*Se crea el comentario*/
+                        int idC = d.getComentarios().size()+1;
+                        int idV = d.getHistorial().size();
+                        
+                        Fecha fecha = new Fecha();
+                        Comentario c = new Comentario(idC,fecha.obtenerFechaActual(),u,tc,sc,idV);
+                        d.setComentarios(agregarComentario(d.getComentarios(),c));
+                        
+                        /*Se actualiza la lista de documentos*/
+                        docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                        }else{
+                            System.out.println("El documento no contiene esa seccion.\n");
+                        }
+                }else{
+                    System.out.println("No puedes acceder a este archivo.\n");
+                }
+            }else{
+                System.out.println("No existe ese documento.\n");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+    }
 }
