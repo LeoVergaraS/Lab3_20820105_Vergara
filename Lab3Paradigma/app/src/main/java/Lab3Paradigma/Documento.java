@@ -37,6 +37,7 @@ public class Documento {
     public int getId(){return this.id;}
     public String getNombreDocumento(){return this.nombre;}
     public String getContenidoDocumento(){return this.contenido;}
+    public Permiso getAccesos(){return this.accesos;}
     public String getAutor(){return this.autor;}
     
     public void setContenido(String contenidoNuevo){
