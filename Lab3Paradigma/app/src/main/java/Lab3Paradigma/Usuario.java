@@ -385,4 +385,52 @@ public class Usuario {
         }
     }
     
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo searchAndReplace y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    
+    public void searchAndReplace(Editor docs, int idDoc, String searchText, String replaceText){
+        /*Se verifica si hay un usuario conectado*/
+        if(docs.conectado()){
+            /* Si es asi se verifica si el id del documento entregado
+            no sobre pase los limites */ 
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                /*Se verifica si el usuario es propietario
+                o tiene permisos de esctritura en el documento.*/
+                int id = docs.getSesionActiva()-1;
+                String u = docs.getListaUsuarios().get(id).username;
+                
+                /* El documento */
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(u) || tienePermisosDe(u,d,"W")){
+                    /*Se verifica que el documento contenga el texto buscado*/
+                    if(d.getContenidoDocumento().contains(searchText)){
+                        /*Se agrega el contenido actual al historial*/
+                        String contenido = d.getContenidoDocumento();
+                        int idV = d.getHistorial().size();
+                        Fecha fecha = new Fecha();
+                        Version h = new Version(idV,contenido,u,fecha.obtenerFechaActual());
+                        d.setHistorial(agregarHistorial(d.getHistorial(),h));
+                        
+                        /*Se busca el texto y se reemplaza*/
+                        String cn = contenido.replaceAll(searchText,replaceText);
+                        d.setContenido(cn);
+                    
+                        /*Se actualiza la lista de documentos*/
+                        docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    }else{
+                        System.out.println("El documento no contiene el texto buscado");
+                    }
+                }else{
+                    System.out.println("No puedes acceder a este archivo.");
+                }
+            }else{
+                System.out.println("No existe ese documento.");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+    }
+    
 }
