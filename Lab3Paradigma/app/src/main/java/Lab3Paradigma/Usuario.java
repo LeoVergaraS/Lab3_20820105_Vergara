@@ -74,8 +74,9 @@ public class Usuario {
             Documento d = new Documento(idDoc,nombre,contenido,autor,fecha.obtenerFechaActual());
             /*Se agrega el documento a la lista de documento del editor.*/
             docs.setListaDocumentos(agregarDocumento(docs.getListaDocumentos(),d));
+            System.out.println("Se creo correctamente el documento.\n");
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -174,14 +175,15 @@ public class Usuario {
                     /* Se comparte el documento */
                     d.setAccesos(agregarPermisos(up,po,d,docs));
                     docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    System.out.println("Se compartio correctamente el archivo.\n");
                 }else{
-                    System.out.println("No eres propietario del documento.");
+                    System.out.println("No tienes permiso para acceder a este documento.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -254,14 +256,15 @@ public class Usuario {
                     
                     /*Se actualiza la lista de documentos*/
                     docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    System.out.println("Se añadio correctamente el texto.\n");
                 }else{
-                    System.out.println("No puedes acceder a este archivo.");
+                    System.out.println("No puedes acceder a este archivo.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -301,17 +304,18 @@ public class Usuario {
                         
                         /*se actualiza la lista de documentos*/
                         docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                        System.out.println("Se restauro correctamente la version.\n");
                     }else{
-                        System.out.println("No existe esa version del documento");
+                        System.out.println("No existe esa version del documento.\n");
                     }
                 }else{
-                    System.out.println("No puedes acceder a este archivo.");
+                    System.out.println("No puedes acceder a este archivo.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -341,14 +345,15 @@ public class Usuario {
                     
                     /*Se actualiza la lista de documentos*/ 
                     docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    System.out.println("Se revocaron correctamente los accesos.\n");
                 }else{
-                    System.out.println("No eres propietario del documento.");
+                    System.out.println("No eres propietario del documento.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -455,14 +460,15 @@ public class Usuario {
                     
                     /*Se actualiza la lista de documentos*/
                     docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    System.out.println("Se eliminaron los ultimos caracteres.\n");
                 }else{
-                    System.out.println("No puedes acceder a este archivo.");
+                    System.out.println("No puedes acceder a este archivo.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -505,17 +511,18 @@ public class Usuario {
                     
                         /*Se actualiza la lista de documentos*/
                         docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                        System.out.println("Se reemplaron todas las coincidencias.\n");
                     }else{
-                        System.out.println("El documento no contiene el texto buscado");
+                        System.out.println("El documento no contiene el texto buscado.\n");
                     }
                 }else{
-                    System.out.println("No puedes acceder a este archivo.");
+                    System.out.println("No puedes acceder a este archivo.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -570,17 +577,18 @@ public class Usuario {
                     
                         /*Se actualiza la lista de documentos*/
                         docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                        System.out.println("Se aplicaron los estilos al texto del documento.\n");
                     }else{
-                        System.out.println("El documento no contiene el texto buscado");
+                        System.out.println("El documento no contiene el texto buscado.\n");
                     }
                 }else{
-                    System.out.println("No puedes acceder a este archivo.");
+                    System.out.println("No puedes acceder a este archivo.\n");
                 }
             }else{
-                System.out.println("No existe ese documento.");
+                System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
     
@@ -629,6 +637,7 @@ public class Usuario {
                         
                         /*Se actualiza la lista de documentos*/
                         docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                        System.out.println("Se comento correctamente el documento.\n");
                         }else{
                             System.out.println("El documento no contiene esa seccion.\n");
                         }
@@ -639,7 +648,7 @@ public class Usuario {
                 System.out.println("No existe ese documento.\n");
             }
         }else{
-            System.out.println("No hay un usuario conectado.");
+            System.out.println("No hay un usuario conectado.\n");
         }
     }
 }

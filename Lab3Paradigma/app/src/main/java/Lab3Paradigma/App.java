@@ -51,7 +51,6 @@ public class App {
                 opcion = sn.nextInt();
                 String u;
                 String p;
-                
                 switch(opcion){
                     case 1: // registrarese
                         System.out.println("INTRODUZCA UN NOMBRE DE USUARIO: ");
@@ -77,7 +76,7 @@ public class App {
                         System.out.println("Debe ingresar un 1, 2, 3 o 4.\n");                      
                 } 
             }catch(InputMismatchException e){
-                System.out.println("Debes ingresar un numero");
+                System.out.println("Debes ingresar un numero\n");
                 sn.next();
             }
         }
@@ -150,6 +149,7 @@ public class App {
                     System.out.println("INGRESE LOS PERMISOS PARA LOS USUARIOS:_");
                     String permiso = pedirString().toUpperCase();
                     conectado.share(docs, up, permiso, idDoc);
+                    
                     break;
                 case 3: // agregar a un documento
                     System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
@@ -236,11 +236,11 @@ public class App {
                     System.out.println("FIN DEL PROGRAMA\n");
                     return false;
                 default:
-                    System.out.println("Las opciones son entre 1 y 12");
+                    System.out.println("Las opciones son entre 1 y 12\n");
             }
             
         }catch(InputMismatchException e){
-            System.out.println("Debes ingresar un numero");
+            System.out.println("Debes ingresar un numero\n");
             sn.next();
             }
         }
