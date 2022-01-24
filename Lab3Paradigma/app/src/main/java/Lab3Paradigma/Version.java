@@ -24,4 +24,6 @@ public class Version {
     
     // Getters y setters
     public String getContenidoVersion(){return this.contenido;}
+    public String getUsuarioModificador(){return this.usuario;}
+    public Date getFechaModificacion(){return this.fechaModificacion;}
 }

@@ -7,13 +7,50 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class App {
-    public static void menu(){
+    public Editor menuNoLogeado(Editor docs){
+        Scanner sn = new Scanner(System.in);
+        
+        boolean seguir = true;
+        int opcion;
+        
+        while(seguir){
+            System.out.println("### EDITOR COLABORATIVO ###");
+            System.out.println("Escoja una opcion:");
+            System.out.println("1. Registrarse en la plataforma");
+            System.out.println("2. Logearse en la plataforma");
+            System.out.println("3. Cerrar el programa");
+             
+            try{
+                System.out.println("INTRODUZCA SU OPCION:_");
+                opcion = sn.nextInt();
+                String username;
+                String password;
+                
+                switch(opcion){
+                    case 1:
+                        
+                        docs.authentication(username, password, fecha);
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case default:
+                        break;    
+                     
+                }
+                         
+            }catch{}
+        }
+    }
+    
+    public Editor menuLogeado(Editor docs){
     Scanner sn = new Scanner(System.in);
             
     boolean seguir = true;
     int opcion;
     
-    while(seguir){
+    while(seguir1){
         System.out.println("### EDITOR COLABORATIVO ###");
         System.out.println("### Registrado como:    ###");
         System.out.println("Escoja una opcion:");
