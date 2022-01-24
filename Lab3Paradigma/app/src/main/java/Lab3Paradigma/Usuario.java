@@ -222,6 +222,42 @@ public class Usuario {
             System.out.println("No hay un usuario conectado.");
         }
     }
-
+    
+    
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo revokeAccess y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    
+    public void revokeAccess(Editor docs,int idDoc){
+        /* Se verifica si hay un usuario conectado */
+        if(docs.conectado()){
+            /* Si es asi se verifica si el id del documento entregado
+            no sobre pase los limites */ 
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                /*Se verifica si el usuario es propietario*/
+                int id = docs.getSesionActiva()-1;
+                String u = docs.getListaUsuarios().get(id).username;
+                
+                /* El documento */
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(u)){
+                    /*se revocan los accesos*/
+                    d.setAccesos(null);
+                    
+                    /*Se actualiza la lista de documentos*/ 
+                    docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                }else{
+                    System.out.println("No eres propietario del documento.");
+                }
+            }else{
+                System.out.println("No existe ese documento.");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+    }
+    
+    
                 
 }
