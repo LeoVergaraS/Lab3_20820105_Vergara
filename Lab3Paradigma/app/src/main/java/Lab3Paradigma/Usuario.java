@@ -258,6 +258,47 @@ public class Usuario {
         }
     }
     
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo search y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    public boolean tienePermisos(String u, Documento d){
+        ArrayList<String> up = d.getAccesos().getUsuariosPermitidos();
+        for(int i=0;i<up.size();i++){
+            if(up.get(i).equals(u)){
+                return true;
+            }
+        }
+        return false;
+    }
     
-                
+    public ArrayList<Documento> search(Editor docs,String sT){
+        /*Se verifica si hay un usuario conectado*/
+        if(docs.conectado()){
+            /*Usuario conectado*/
+            int id = docs.getSesionActiva()-1;
+            String u = docs.getListaUsuarios().get(id).username;
+            
+            /*lista filtrada y lista para filtrar*/
+            ArrayList<Documento> listaFiltrada = new ArrayList<>();
+            ArrayList<Documento> lista = docs.getListaDocumentos();
+            
+            /*Se filtra la lista de documentos*/
+            int n = lista.size();
+            for(int i = 0;i<n;i++){
+                /*Se verifica si es propietario o tiene permisos
+                en el documento*/
+                if(lista.get(i).getAutor().equals(u) || tienePermisos(u,lista.get(i))){
+                    /*se verifica si el contenido del texto contiene
+                    el texto buscado*/
+                    if(lista.get(i).getContenidoDocumento().contains(sT)){
+                        listaFiltrada.add(lista.get(i));
+                    }
+                }
+            }
+            return listaFiltrada;
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+        return null;
+    }
 }
