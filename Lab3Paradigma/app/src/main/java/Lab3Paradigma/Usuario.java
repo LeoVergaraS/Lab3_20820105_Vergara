@@ -15,19 +15,21 @@ public class Usuario {
     private int id;
     private String username;
     private String password;
-    private Date fechaRegistro;
+    private String fechaRegistro;
        
     // Constructor
-    public Usuario(int i, String u, String p){
+    public Usuario(int i, String u, String p,String f){
         this.id = i;
         this.username = u;
         this.password = p;
+        this.fechaRegistro = f;
     }
     
     // getters y setters
     public int getIdUsuario(){return this.id;}
     public String getUsername(){return this.username;}
     public String getPassword(){return this.password;}
+    public String getFechaRegistro(){return this.fechaRegistro;}
     
     //////////////////////////////////////////////////////////////////////
     ///               Metodo create y auxiliares
@@ -54,7 +56,8 @@ public class Usuario {
             /*el id del documento es el ultimo de la lista de documento.*/
             int idDoc = docs.getListaDocumentos().size()+1;
             /*Se crea el nuevo documento.*/
-            Documento d = new Documento(idDoc,nombre,contenido,autor,new Date(12,20,2021));
+            Fecha fecha = new Fecha();
+            Documento d = new Documento(idDoc,nombre,contenido,autor,fecha.obtenerFechaActual());
             /*Se agrega el documento a la lista de documento del editor.*/
             docs.setListaDocumentos(agregarDocumento(docs.getListaDocumentos(),d));
         }else{
@@ -73,7 +76,46 @@ public class Usuario {
         return nld;
     }
     
-    public void share(Editor docs,ArrayList<String> up,ArrayList<String> po, int idDoc){
+    public boolean yaEsta(String u, ArrayList<Permiso> p){
+        for(int i=0;i<p.size();i++){
+            if(p.get(i).getUsuarioPermitido().equals(u)){
+                return true;
+            }
+        }
+        return false;
+    }
+     
+    public ArrayList<Permiso> agregarPermisos(ArrayList<String> up,String po, Documento d,Editor docs){ 
+        ArrayList<Permiso> nuevaLista = new ArrayList<>();
+        ArrayList<Permiso> lista = d.getAccesos();
+       
+        Permiso p;
+        int m = up.size();
+        int i,j;
+        
+        for(i=0;i<m;i++){
+            if(docs.esta(up.get(i)) && !d.getAutor().equals(up.get(i))){
+                p = new Permiso(up.get(i),po);
+                nuevaLista.add(p);
+            }
+        }
+
+        if(lista.isEmpty()){
+            return nuevaLista;
+            
+        }
+        
+        for(i=0;i<lista.size();i++){
+            String usuario = lista.get(i).getUsuarioPermitido();
+            if(!yaEsta(usuario,nuevaLista)){
+               nuevaLista.add(lista.get(i));
+            }
+        }
+     
+        return nuevaLista;
+    }
+    
+    public void share(Editor docs,ArrayList<String> up,String po, int idDoc){
         /*Se verifica si hay un usuario conectado,*/
         if(docs.conectado()){
             /*Si es asi se verifica si el id entregado no sobre pase
@@ -83,14 +125,13 @@ public class Usuario {
                 /* Se verifica si el usuario conectado es propietario
                 del documento.*/
                 int id = docs.getSesionActiva()-1;
-                String propietario = docs.getListaUsuarios().get(id).username;
+                String usuario = docs.getListaUsuarios().get(id).username;
                 
                 /* El documento */
                 Documento d = docs.getListaDocumentos().get(idDoc-1);
-                if(d.getAutor().equals(propietario)){
+                if(d.getAutor().equals(usuario) || tienePermisosDe(usuario,d,"W")){
                     /* Se comparte el documento */
-                    Permiso p = new Permiso(up,po);
-                    d.setAccesos(p);
+                    d.setAccesos(agregarPermisos(up,po,d,docs));
                     docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
                 }else{
                     System.out.println("No eres propietario del documento.");
@@ -108,24 +149,13 @@ public class Usuario {
     ///               Metodo add y auxiliares
     //////////////////////////////////////////////////////////////////////
     public boolean tienePermisosDe(String usuario,Documento d,String permiso){
-        int i,j;
-        
-        ArrayList<String> up = d.getAccesos().getUsuariosPermitidos();
-        ArrayList<String> po = d.getAccesos().getPermisosOtorgados();
+        ArrayList<Permiso> p = d.getAccesos();
         
         /*Se verifica si el usuario esta en los permisos del documento*/
-        for(i=0;i<up.size();i++){
-            /*Si se encuentra al usuario, se ve si el permiso coincide con el
-            entregado */
-            if(up.get(i).equals(usuario)){
-                for(j=0;j<po.size();j++){
-                    /*Si se encuentra el permiso, se retorna true*/
-                    if(po.get(j).equals(permiso)){
-                        return true;
-                    }
-                }
-                /*Esta el usuario pero no coincide el permiso*/
-                return false;
+        for(int i=0;i<p.size();i++){
+            if(p.get(i).getUsuarioPermitido().equals(usuario) &&
+                    p.get(i).getPermisoOtorgado().equals(permiso)){
+                return true;
             }
         }
         /*No esta el usuario*/
@@ -157,7 +187,8 @@ public class Usuario {
                     /*Se agrega el contenido actual al historial*/
                     String contenido = d.getContenidoDocumento();
                     int idV = d.getHistorial().size();
-                    Version h = new Version(idV,contenido,u,new Date(12,12,12));
+                    Fecha fecha = new Fecha();
+                    Version h = new Version(idV,contenido,u,fecha.obtenerFechaActual());
                     d.setHistorial(agregarHistorial(d.getHistorial(),h));
                     
                     /*Se crea el nuevo contenido del documento y se agrega al
@@ -201,7 +232,8 @@ public class Usuario {
                         /*Se agrega el contenido actual al historial*/
                         String c = d.getContenidoDocumento();
                         int iDnV = d.getHistorial().size();
-                        Version h = new Version(iDnV,c,u,new Date(12,12,12));
+                        Fecha fecha = new Fecha();
+                        Version h = new Version(iDnV,c,u,fecha.obtenerFechaActual());
                         d.setHistorial(agregarHistorial(d.getHistorial(),h));
                         
                         /*Se restaura el contenido de la version*/
@@ -262,9 +294,9 @@ public class Usuario {
     ///               Metodo search y auxiliares
     //////////////////////////////////////////////////////////////////////
     public boolean tienePermisos(String u, Documento d){
-        ArrayList<String> up = d.getAccesos().getUsuariosPermitidos();
-        for(int i=0;i<up.size();i++){
-            if(up.get(i).equals(u)){
+        ArrayList<Permiso> permisos = d.getAccesos();
+        for(int i=0;i<permisos.size();i++){
+            if(permisos.get(i).getUsuarioPermitido().equals(u)){
                 return true;
             }
         }
@@ -300,6 +332,57 @@ public class Usuario {
             System.out.println("No hay un usuario conectado.");
         }
         return null;
+    }
+    
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo delete y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    public int caracteresAEliminar(int tamanioContenido,int n){
+        if(n>=tamanioContenido){
+            return 0;
+        }else{
+            return tamanioContenido-n;
+        }
+    }
+    
+    public void delete(Editor docs,int idDoc,int nC){
+         /*Se verifica si hay un usuario conectado*/
+        if(docs.conectado()){
+            /* Si es asi se verifica si el id del documento entregado
+            no sobre pase los limites */ 
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                /*Se verifica si el usuario es propietario
+                o tiene permisos de esctritura en el documento.*/
+                int id = docs.getSesionActiva()-1;
+                String u = docs.getListaUsuarios().get(id).username;
+                
+                /* El documento */
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(u) || tienePermisosDe(u,d,"W")){
+                    /*Se agrega el contenido actual al historial*/
+                    String contenido = d.getContenidoDocumento();
+                    int idV = d.getHistorial().size();
+                    Fecha fecha = new Fecha();
+                    Version h = new Version(idV,contenido,u,fecha.obtenerFechaActual());
+                    d.setHistorial(agregarHistorial(d.getHistorial(),h));
+                    
+                    /*Se eliminan los ultimos n caracteres del contenido y 
+                    se actualiza la lista de documentos*/
+                    String cn = contenido.substring(0,caracteresAEliminar(contenido.length(),nC));
+                    d.setContenido(cn);
+                    
+                    /*Se actualiza la lista de documentos*/
+                    docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                }else{
+                    System.out.println("No puedes acceder a este archivo.");
+                }
+            }else{
+                System.out.println("No existe ese documento.");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
     }
     
 }

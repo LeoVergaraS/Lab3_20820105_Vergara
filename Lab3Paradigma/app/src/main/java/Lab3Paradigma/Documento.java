@@ -16,13 +16,13 @@ public class Documento {
     private String nombre;
     private String contenido;
     private String autor;
-    private Date fechaCreacion;
-    private Date fechaModificacion;
+    private String fechaCreacion;
+    private String fechaModificacion;
     private ArrayList<Version> historial;
-    private Permiso accesos;
+    private ArrayList<Permiso> accesos;
     
     // Constructor
-    public Documento(int i,String n,String c,String a,Date fC){
+    public Documento(int i,String n,String c,String a,String fC){
         this.id = i;
         this.nombre = n;
         this.contenido = c;
@@ -30,7 +30,7 @@ public class Documento {
         this.fechaCreacion = fC;
         this.fechaModificacion = fC;
         this.historial = new ArrayList<>();
-        this.accesos = null;
+        this.accesos = new ArrayList<>();
     }
     
     // getters y setters
@@ -38,19 +38,20 @@ public class Documento {
     public String getNombreDocumento(){return this.nombre;}
     public String getContenidoDocumento(){return this.contenido;}
     public String getAutor(){return this.autor;}
-    public Permiso getAccesos(){return this.accesos;}
+    public String fechaCreacionDocumento(){return this.fechaCreacion;}
+    public ArrayList<Permiso> getAccesos(){return this.accesos;}
     public ArrayList<Version> getHistorial(){return this.historial;}
     
     public void setContenido(String contenidoNuevo){
         this.contenido = contenidoNuevo;
     }
-    public void setFechaModificacion(Date fM){
+    public void setFechaModificacion(String fM){
         this.fechaModificacion = fM;
     }
     public void setHistorial(ArrayList<Version> HistorialNuevo){
         this.historial = HistorialNuevo;
     }
-    public void setAccesos(Permiso AccesosNuevos){
+    public void setAccesos(ArrayList<Permiso> AccesosNuevos){
         this.accesos = AccesosNuevos;
     }
 }

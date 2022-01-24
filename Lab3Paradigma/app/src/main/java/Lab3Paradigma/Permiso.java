@@ -12,27 +12,27 @@ import java.util.ArrayList;
  */
 public class Permiso {
     // Atributos
-    private ArrayList<String> usuariosPermitidos;
-    private ArrayList<String> permisosOtorgados;
+    private String usuarioPermitido;
+    private String permisoOtorgado;
     
     // Constructor
-    public Permiso(ArrayList<String> uP,ArrayList<String> pO){
-        this.usuariosPermitidos = uP;
-        this.permisosOtorgados = pO;
+    public Permiso(String uP,String pO){
+        this.usuarioPermitido = uP;
+        this.permisoOtorgado = pO;
     }
    
     // getters y setters
-    public ArrayList<String> getUsuariosPermitidos(){
-        return this.usuariosPermitidos;
+    public String getUsuarioPermitido(){
+        return this.usuarioPermitido;
     }
-    public ArrayList<String> getPermisosOtorgados(){
-        return this.permisosOtorgados;
+    public String getPermisoOtorgado(){
+        return this.permisoOtorgado;
     }
     
-    public void setUsuariosPermitidos(ArrayList<String> nuevaLista){
-        this.usuariosPermitidos = nuevaLista;
+    public void setUsuarioPermitido(String u){
+        this.usuarioPermitido = u;
     }
-    public void setPermisosOtorgados(ArrayList<String> nuevaLista){
-        this.permisosOtorgados = nuevaLista;
+    public void setPermisoOtorgado(String p){
+        this.permisoOtorgado = p;
     }
 }

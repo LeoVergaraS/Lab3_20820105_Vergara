@@ -12,10 +12,10 @@ public class Version {
     private int id;
     private String contenido;
     private String usuario;
-    private Date fechaModificacion;
+    private String fechaModificacion;
     
     // Constructor
-    public Version(int i,String c,String u,Date fM){
+    public Version(int i,String c,String u,String fM){
         this.id = i;
         this.contenido = c;
         this.usuario = u;
@@ -25,5 +25,5 @@ public class Version {
     // Getters y setters
     public String getContenidoVersion(){return this.contenido;}
     public String getUsuarioModificador(){return this.usuario;}
-    public Date getFechaModificacion(){return this.fechaModificacion;}
+    public String getFechaModificacion(){return this.fechaModificacion;}
 }

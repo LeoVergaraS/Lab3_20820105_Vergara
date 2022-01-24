@@ -7,52 +7,84 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class App {
-    public Editor menuNoLogeado(Editor docs){
+    public static String pedirString(){
+        Scanner sn = new Scanner(System.in);
+        String username;
+        username = sn.nextLine();
+        return username;
+    }
+    
+    public static int pedirEntero(){
+        Scanner sn = new Scanner(System.in);
+        int username;
+        username = sn.nextInt();
+        return username;
+    }
+    
+    public boolean menuNoLogeado(Editor docs){
         Scanner sn = new Scanner(System.in);
         
         boolean seguir = true;
         int opcion;
+        Fecha fecha = new Fecha();
         
         while(seguir){
             System.out.println("### EDITOR COLABORATIVO ###");
             System.out.println("Escoja una opcion:");
             System.out.println("1. Registrarse en la plataforma");
             System.out.println("2. Logearse en la plataforma");
+            System.out.println("3. Visualizar la plataforma");
             System.out.println("3. Cerrar el programa");
              
             try{
                 System.out.println("INTRODUZCA SU OPCION:_");
                 opcion = sn.nextInt();
-                String username;
-                String password;
+                String u;
+                String p;
                 
                 switch(opcion){
                     case 1:
-                        
-                        docs.authentication(username, password, fecha);
+                        System.out.println("INTRODUZCA UN NOMBRE DE USUARIO: ");
+                        u = pedirString();
+                        System.out.println("INTRODUZCA UNA CONTRASENIA: ");
+                        p = pedirString();
+                        docs.authentication(u, p, fecha.obtenerFechaActual());
                         break;
                     case 2:
-                        break;
+                        System.out.println("INTRODUZCA SU NOMBRE DE USUARIO: ");
+                        u = pedirString();
+                        System.out.println("INTRODUZCA SU CONTRASENIA: ");
+                        p = pedirString();
+                        docs.authentication(u, p);
+                        seguir = false;
+                        return true;
                     case 3:
-                        break;
-                    case default:
-                        break;    
-                     
-                }
-                         
-            }catch{}
+                        seguir = false;
+                        System.out.println("FIN DEL PROGRAMA.\n");
+                        return false;
+                    default:
+                        System.out.println("Debe ingresar un 1, 2 o 3.\n");                      
+                } 
+            }catch(InputMismatchException e){
+                System.out.println("Debes ingresar un numero");
+                sn.next();
+            }
         }
+        return true;
     }
     
-    public Editor menuLogeado(Editor docs){
+    public boolean menuLogeado(Editor docs){
     Scanner sn = new Scanner(System.in);
             
     boolean seguir = true;
     int opcion;
     
-    while(seguir1){
+    int id = docs.getSesionActiva()-1;
+    Usuario conectado = docs.getListaUsuarios().get(id);
+    
+    while(seguir){
         System.out.println("### EDITOR COLABORATIVO ###");
-        System.out.println("### Registrado como:    ###");
+        System.out.println("### Registrado como: "+conectado.getUsername()+" ###");
         System.out.println("Escoja una opcion:");
         System.out.println("1. Crear nuevo documento");
         System.out.println("2. Compartir documento");
@@ -66,38 +98,75 @@ public class App {
         
         try{
             System.out.println("INTRODUZCA SU OPCION:_");
+            String nombre;
+            String contenido;
+            int idDoc;
         
             opcion = sn.nextInt();
         
             switch(opcion){
              case 1:
-                    System.out.println("1");
+                    System.out.println("INTRODUZCA EL NOMBRE PARA SU DOCUMENTO:_");
+                    nombre = pedirString();
+                    System.out.println("INTRODUZCA EL CONTENIDO:_");
+                    contenido = pedirString();
+                    conectado.create(docs, nombre, contenido);
                     break;
                 case 2:
-                    System.out.println("2");
+                    System.out.println("INGRESE EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INGRESE LOS NOMBRES DE USUARIO,");
+                    System.out.println("si desea terminar ingrese TERMINAR:_");
+                    ArrayList<String> up = new ArrayList<>();
+                    boolean parar = false;
+                    while(!parar){
+                        System.out.println("->");
+                        nombre = pedirString();
+                        if(nombre.equals("TERMINAR")){
+                            parar = true;
+                        }else{
+                            up.add(nombre);
+                        }
+                    }
+                    System.out.println("INGRESE LOS PERMISOS PARA LOS USUARIOS:_");
+                    String permiso = pedirString();
+                    conectado.share(docs, up, permiso, idDoc);
                     break;
                 case 3:
-                    System.out.println("3");
+                    System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INTRODUZCA EL TEXTO PARA AGREGAR:_");
+                    String addText = pedirString();
+                    conectado.add(docs, idDoc, addText);
                     break;
                 case 4:
-                    System.out.println("4");
+                    System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    System.out.println("INTRODUZCA EL ID DE LA VERSION:_");
+                    int idV = pedirEntero();
+                    conectado.rollback(docs, idDoc, id);
                     break;
                 case 5:
-                    System.out.println("5");
+                    System.out.println("INTRODUZCA EL ID DEL DOCUMENTO:_");
+                    idDoc = pedirEntero();
+                    conectado.revokeAccess(docs,idDoc);
                     break;
                 case 6:
-                    System.out.println("6");
+                    System.out.println("INTRODUZCA EL TEXTO BUSCADO:_");
+                    String searchText = pedirString();
+                    conectado.search(docs, searchText);
                     break;
                 case 7:
-                    System.out.println("7");
+                    docs.visualize();
                     break;
                 case 8:
-                    System.out.println("8");
-                    break;
-                case 9:
-                    System.out.println("Fin del programa");
+                    docs.authentication();
                     seguir = false;
                     break;
+                case 9:
+                    System.out.println("FIN DEL PROGRAMA\n");
+                    seguir = false;
+                    return false;
                 default:
                     System.out.println("Las opciones son entre 1 y 9");
             }
@@ -107,9 +176,19 @@ public class App {
             sn.next();
             }
         }
+    return true;
     }
 
-    public static void main(String[] args) {
-       System.out.println("Este es el main");
+    public static void main(String[] args){
+       Fecha fecha = new Fecha();
+       Editor DuckDocs = new Editor("DuckDocs",fecha.obtenerFechaActual());
+       App inicio = new App();
+       boolean v1 = true;
+       while(v1){
+           v1 = inicio.menuNoLogeado(DuckDocs);
+           if(DuckDocs.conectado()){
+               v1 = inicio.menuLogeado(DuckDocs);
+           }
+       }
     }
 }
