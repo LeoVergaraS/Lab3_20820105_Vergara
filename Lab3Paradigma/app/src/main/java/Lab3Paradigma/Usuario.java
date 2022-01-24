@@ -58,8 +58,56 @@ public class Usuario {
             // Se crea el nuevo documento.
             Documento d = new Documento(idDoc,nombre,contenido,autor,new Date(12,20,2021));
             // Se agrega el documento a la lista de documento del editor.
-    
             docs.setListaDocumentos(agregarDocumento(docs.getListaDocumentos(),d));
+        }else{
+            System.out.println("No hay un usuario conectado.");
         }
     }
+    
+    
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo share y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    public ArrayList<Documento> actualizarListaDocumentos(ArrayList<Documento> l,Documento d, int idDoc){
+        ArrayList<Documento> nld = new ArrayList<>();
+        for(int i=0;i<l.size();i++){
+            if(i == idDoc){
+                nld.add(d);
+            }else{
+                nld.add(l.get(i));
+            }
+        }
+        return nld;
+    }
+    
+    public void share(Editor docs,ArrayList<String> up,ArrayList<String> po, int idDoc){
+        // Se verifica si hay un usuario conectado,
+        if(docs.conectado()){
+            // Si es asi se verifica si el id entregado no sobre pase
+            // los limites.
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                // Se verifica si el usuario conectado es propietario
+                // del documento.
+                int id = docs.getSesionActiva()-1;
+                String propietario = docs.getListaUsuarios().get(id).username;
+                
+                // El documento
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(propietario)){
+                    // Se comparte el archivo
+                    Permiso p = new Permiso(up,po);
+                    d.setAccesos(p);
+                    docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                }else{
+                    System.out.println("No eres propietario del documento.");
+                }
+            }else{
+                System.out.println("No existe ese documento.");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+    }
+    
 }
