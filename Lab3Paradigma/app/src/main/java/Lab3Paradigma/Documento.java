@@ -37,8 +37,9 @@ public class Documento {
     public int getId(){return this.id;}
     public String getNombreDocumento(){return this.nombre;}
     public String getContenidoDocumento(){return this.contenido;}
-    public Permiso getAccesos(){return this.accesos;}
     public String getAutor(){return this.autor;}
+    public Permiso getAccesos(){return this.accesos;}
+    public ArrayList<Version> getHistorial(){return this.historial;}
     
     public void setContenido(String contenidoNuevo){
         this.contenido = contenidoNuevo;

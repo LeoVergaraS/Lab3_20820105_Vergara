@@ -37,9 +37,7 @@ public class Usuario {
         /*Se crea una nueva lista,*/
         ArrayList<Documento> nld = new ArrayList<>();
         /*Se copia toda la lista en la nueva*/
-        for(int i=0;i<ld.size();i++){
-            nld.add(ld.get(i));
-        }
+        nld.addAll(ld);
         /*Se agrega al final el nuevo documento*/
         nld.add(d);
         return nld;
@@ -70,13 +68,8 @@ public class Usuario {
     //////////////////////////////////////////////////////////////////////
     public ArrayList<Documento> actualizarListaDocumentos(ArrayList<Documento> l,Documento d, int idDoc){
         ArrayList<Documento> nld = new ArrayList<>();
-        for(int i=0;i<l.size();i++){
-            if(i == idDoc){
-                nld.add(d);
-            }else{
-                nld.add(l.get(i));
-            }
-        }
+        nld.addAll(l);
+        nld.set(idDoc,d);
         return nld;
     }
     
@@ -139,6 +132,13 @@ public class Usuario {
         return false;
     }
     
+    public ArrayList<Version> agregarHistorial(ArrayList<Version> lv,Version h){
+        ArrayList<Version> nlv = new ArrayList<>();
+        nlv.addAll(lv);
+        nlv.add(h);
+        return nlv;
+    }
+    
     public void add(Editor docs,int idDoc,String textAdd){
         /* Se verifica si hay un usuario conectado */
         if(docs.conectado()){
@@ -154,9 +154,15 @@ public class Usuario {
                 /* El documento */
                 Documento d = docs.getListaDocumentos().get(idDoc-1);
                 if(d.getAutor().equals(u) || tienePermisosDe(u,d,"W")){
+                    /*Se agrega el contenido actual al historial*/
+                    String contenido = d.getContenidoDocumento();
+                    int idV = d.getHistorial().size();
+                    Version h = new Version(idV,contenido,u,new Date(12,12,12));
+                    d.setHistorial(agregarHistorial(d.getHistorial(),h));
+                    
                     /*Se crea el nuevo contenido del documento y se agrega al
                     documento*/
-                    String cn = d.getContenidoDocumento() + textAdd;
+                    String cn = contenido + textAdd;
                     d.setContenido(cn);
                     
                     /*Se actualiza la lista de documentos*/
@@ -172,4 +178,50 @@ public class Usuario {
         }
     }
     
+    //////////////////////////////////////////////////////////////////////
+    ///               Metodo rollback y auxiliares
+    //////////////////////////////////////////////////////////////////////
+    public void rollback(Editor docs,int idDoc, int idV){
+        /* Se verifica si hay un usuario conectado */
+        if(docs.conectado()){
+            /* Si es asi se verifica si el id del documento entregado
+            no sobre pase los limites */ 
+            int n = docs.getListaDocumentos().size();
+            if(1<=idDoc && idDoc<= n){
+                /*Se verifica si el usuario es propietario*/
+                int id = docs.getSesionActiva()-1;
+                String u = docs.getListaUsuarios().get(id).username;
+                
+                /* El documento */
+                Documento d = docs.getListaDocumentos().get(idDoc-1);
+                if(d.getAutor().equals(u)){
+                    /*Se verifica que la version exista*/
+                    int m = d.getHistorial().size();
+                    if(0<=idV && idV<=m){
+                        /*Se agrega el contenido actual al historial*/
+                        String c = d.getContenidoDocumento();
+                        int iDnV = d.getHistorial().size();
+                        Version h = new Version(iDnV,c,u,new Date(12,12,12));
+                        d.setHistorial(agregarHistorial(d.getHistorial(),h));
+                        
+                        /*Se restaura el contenido de la version*/
+                        d.setContenido(d.getHistorial().get(idV).getContenidoVersion());
+                        
+                        /*se actualiza la lista de documentos*/
+                        docs.setListaDocumentos(actualizarListaDocumentos(docs.getListaDocumentos(),d,idDoc-1));
+                    }else{
+                        System.out.println("No existe esa version del documento");
+                    }
+                }else{
+                    System.out.println("No puedes acceder a este archivo.");
+                }
+            }else{
+                System.out.println("No existe ese documento.");
+            }
+        }else{
+            System.out.println("No hay un usuario conectado.");
+        }
+    }
+
+                
 }
